@@ -9,6 +9,7 @@ export type Ingredient = {
   amount: string;
 };
 
+// This is the full cocktail object with all details
 export type Cocktail = {
   id: string;
   name: TranslatedString;
@@ -16,194 +17,137 @@ export type Cocktail = {
   instructions: TranslatedString;
   image: string;
   tags: TranslatedString[];
+  baseSpirit: string; // This might be a best-guess based on category or first ingredient
+};
+
+// This is a summary for list views
+export type CocktailSummary = {
+  id: string;
+  name: string; // Just one name for summary
+  image: string;
   baseSpirit: string;
 };
 
-const cocktails: Cocktail[] = [
-  {
-    id: 'mojito',
-    name: { en: 'Mojito', es: 'Mojito' },
-    ingredients: [
-      { name: { en: 'White Rum', es: 'Ron Blanco' }, amount: '2 oz' },
-      { name: { en: 'Lime Juice', es: 'Jugo de Lima' }, amount: '1 oz' },
-      { name: { en: 'Mint Leaves', es: 'Hojas de Menta' }, amount: '6-8' },
-      { name: { en: 'Simple Syrup', es: 'Jarabe Simple' }, amount: '0.75 oz' },
-      { name: { en: 'Club Soda', es: 'Soda' }, amount: 'Top with' },
-    ],
-    instructions: {
-      en: 'Muddle mint leaves with sugar and lime juice. Add a splash of soda water and fill the glass with cracked ice. Pour the rum and top with soda water. Garnish with a mint sprig and a lime slice.',
-      es: 'Machacar las hojas de menta con el azúcar y el jugo de lima. Añadir un chorrito de soda y llenar el vaso con hielo picado. Verter el ron y completar con soda. Decorar con una ramita de menta y una rodaja de lima.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Classic', es: 'Clásico' }, { en: 'Refreshing', es: 'Refrescante' }],
-    baseSpirit: 'Rum',
-  },
-  {
-    id: 'old-fashioned',
-    name: { en: 'Old Fashioned', es: 'Old Fashioned' },
-    ingredients: [
-      { name: { en: 'Bourbon or Rye Whiskey', es: 'Bourbon o Whiskey de Centeno' }, amount: '2 oz' },
-      { name: { en: 'Angostura Bitters', es: 'Amargo de Angostura' }, amount: '2 dashes' },
-      { name: { en: 'Sugar Cube', es: 'Cubo de Azúcar' }, amount: '1' },
-      { name: { en: 'Orange Peel', es: 'Piel de Naranja' }, amount: 'Garnish' },
-    ],
-    instructions: {
-      en: 'Place sugar cube in old fashioned glass and saturate with bitters, add a dash of plain water. Muddle until dissolved. Fill the glass with ice cubes and add whiskey. Garnish with an orange peel.',
-      es: 'Colocar el cubo de azúcar en un vaso old fashioned y saturar con amargo de angostura, añadir un chorrito de agua. Machacar hasta disolver. Llenar el vaso con cubos de hielo y añadir el whiskey. Decorar con una piel de naranja.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Classic', es: 'Clásico' }, { en: 'Strong', es: 'Fuerte' }],
-    baseSpirit: 'Whiskey',
-  },
-  {
-    id: 'margarita',
-    name: { en: 'Margarita', es: 'Margarita' },
-    ingredients: [
-      { name: { en: 'Tequila', es: 'Tequila' }, amount: '2 oz' },
-      { name: { en: 'Lime Juice', es: 'Jugo de Lima' }, amount: '1 oz' },
-      { name: { en: 'Cointreau', es: 'Cointreau' }, amount: '1 oz' },
-      { name: { en: 'Salt', es: 'Sal' }, amount: 'For rim' },
-    ],
-    instructions: {
-      en: 'Rub the rim of the glass with a lime slice to make the salt stick to it. Shake the other ingredients with ice, then carefully pour into the glass. Garnish with a lime wheel.',
-      es: 'Frotar el borde del vaso con una rodaja de lima para que la sal se adhiera. Agitar los otros ingredientes con hielo, luego verter con cuidado en el vaso. Decorar con una rodaja de lima.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Classic', es: 'Clásico' }, { en: 'Party', es: 'Fiesta' }],
-    baseSpirit: 'Tequila',
-  },
-  {
-    id: 'negroni',
-    name: { en: 'Negroni', es: 'Negroni' },
-    ingredients: [
-      { name: { en: 'Gin', es: 'Ginebra' }, amount: '1 oz' },
-      { name: { en: 'Campari', es: 'Campari' }, amount: '1 oz' },
-      { name: { en: 'Sweet Vermouth', es: 'Vermut Dulce' }, amount: '1 oz' },
-    ],
-    instructions: {
-      en: 'Stir all ingredients with ice, then strain into a rocks glass with a large ice cube. Garnish with an orange peel.',
-      es: 'Remover todos los ingredientes con hielo, luego colar en un vaso de rocas con un cubo de hielo grande. Decorar con una piel de naranja.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Classic', es: 'Clásico' }, { en: 'Bitter', es: 'Amargo' }],
-    baseSpirit: 'Gin',
-  },
-  {
-    id: 'martini',
-    name: { en: 'Dry Martini', es: 'Martini Seco' },
-    ingredients: [
-      { name: { en: 'Gin', es: 'Ginebra' }, amount: '2.5 oz' },
-      { name: { en: 'Dry Vermouth', es: 'Vermut Seco' }, amount: '0.5 oz' },
-      { name: { en: 'Lemon Peel or Olives', es: 'Piel de Limón o Aceitunas' }, amount: 'Garnish' },
-    ],
-    instructions: {
-      en: 'Stir gin and vermouth with ice. Strain into a chilled cocktail glass. Garnish with a lemon peel or olives.',
-      es: 'Remover la ginebra y el vermut con hielo. Colar en una copa de cóctel fría. Decorar con una piel de limón o aceitunas.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Classic', es: 'Clásico' }, { en: 'Elegant', es: 'Elegante' }],
-    baseSpirit: 'Gin',
-  },
-  {
-    id: 'whiskey-sour',
-    name: { en: 'Whiskey Sour', es: 'Whiskey Sour' },
-    ingredients: [
-      { name: { en: 'Whiskey', es: 'Whiskey' }, amount: '2 oz' },
-      { name: { en: 'Lemon Juice', es: 'Jugo de Limón' }, amount: '1 oz' },
-      { name: { en: 'Simple Syrup', es: 'Jarabe Simple' }, amount: '0.75 oz' },
-      { name: { en: 'Egg White (optional)', es: 'Clara de Huevo (opcional)' }, amount: '1' },
-    ],
-    instructions: {
-      en: 'Add all ingredients to a shaker and dry-shake (without ice) for 30 seconds. Add ice and shake again until well-chilled. Strain into a chilled glass. Garnish with a cherry and/or orange slice.',
-      es: 'Añadir todos los ingredientes a una coctelera y agitar en seco (sin hielo) durante 30 segundos. Añadir hielo y agitar de nuevo hasta que esté bien frío. Colar en un vaso frío. Decorar con una cereza y/o una rodaja de naranja.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Classic', es: 'Clásico' }, { en: 'Sour', es: 'Agrio' }],
-    baseSpirit: 'Whiskey',
-  },
-  {
-    id: 'cosmopolitan',
-    name: { en: 'Cosmopolitan', es: 'Cosmopolitan' },
-    ingredients: [
-      { name: { en: 'Vodka Citron', es: 'Vodka de Limón' }, amount: '1.5 oz' },
-      { name: { en: 'Cointreau', es: 'Cointreau' }, amount: '1 oz' },
-      { name: { en: 'Lime Juice', es: 'Jugo de Lima' }, amount: '0.5 oz' },
-      { name: { en: 'Cranberry Juice', es: 'Jugo de Arándano' }, amount: '0.25 oz' },
-    ],
-    instructions: {
-      en: 'Add all ingredients into a shaker with ice and shake. Strain into a large cocktail glass. Garnish with a lime wheel.',
-      es: 'Añadir todos los ingredientes a una coctelera con hielo y agitar. Colar en una copa de cóctel grande. Decorar con una rodaja de lima.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Fruity', es: 'Afrutado' }, { en: 'Modern Classic', es: 'Clásico Moderno' }],
-    baseSpirit: 'Vodka',
-  },
-  {
-    id: 'aperol-spritz',
-    name: { en: 'Aperol Spritz', es: 'Aperol Spritz' },
-    ingredients: [
-      { name: { en: 'Aperol', es: 'Aperol' }, amount: '3 parts' },
-      { name: { en: 'Prosecco', es: 'Prosecco' }, amount: '3 parts' },
-      { name: { en: 'Club Soda', es: 'Soda' }, amount: '1 part' },
-      { name: { en: 'Orange Slice', es: 'Rodaja de Naranja' }, amount: 'Garnish' },
-    ],
-    instructions: {
-      en: 'Build in a wine glass filled with ice. Combine Prosecco followed by Aperol. Add a splash of soda, stir gently. Garnish with an orange slice.',
-      es: 'Construir en una copa de vino llena de hielo. Combinar el Prosecco seguido del Aperol. Añadir un chorrito de soda, remover suavemente. Decorar con una rodaja de naranja.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Bubbly', es: 'Burbujeante' }, { en: 'Aperitif', es: 'Aperitivo' }],
-    baseSpirit: 'Aperol',
-  },
-  {
-    id: 'gin-and-tonic',
-    name: { en: 'Gin and Tonic', es: 'Gin Tonic' },
-    ingredients: [
-      { name: { en: 'Gin', es: 'Ginebra' }, amount: '2 oz' },
-      { name: { en: 'Tonic Water', es: 'Agua Tónica' }, amount: '4-5 oz' },
-      { name: { en: 'Lime Wedge', es: 'Cuña de Lima' }, amount: 'Garnish' },
-    ],
-    instructions: {
-      en: 'Fill a highball glass with ice. Pour in the gin, then top with tonic water. Squeeze in the lime wedge and drop it into the glass.',
-      es: 'Llenar un vaso highball con hielo. Verter la ginebra, luego completar con agua tónica. Exprimir la cuña de lima y dejarla caer en el vaso.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Simple', es: 'Sencillo' }, { en: 'Refreshing', es: 'Refrescante' }],
-    baseSpirit: 'Gin',
-  },
-  {
-    id: 'pisco-sour',
-    name: { en: 'Pisco Sour', es: 'Pisco Sour' },
-    ingredients: [
-      { name: { en: 'Pisco', es: 'Pisco' }, amount: '2 oz' },
-      { name: { en: 'Lime Juice', es: 'Jugo de Lima' }, amount: '1 oz' },
-      { name: { en: 'Simple Syrup', es: 'Jarabe Simple' }, amount: '0.75 oz' },
-      { name: { en: 'Egg White', es: 'Clara de Huevo' }, amount: '1' },
-      { name: { en: 'Angostura Bitters', es: 'Amargo de Angostura' }, amount: '1 dash' },
-    ],
-    instructions: {
-      en: 'Vigorously shake all ingredients (except bitters) with ice. Strain into a chilled glass. Garnish with a few drops of Angostura bitters.',
-      es: 'Agitar vigorosamente todos los ingredientes (excepto el amargo) con hielo. Colar en un vaso frío. Decorar con unas gotas de amargo de Angostura.',
-    },
-    image: 'https://placehold.co/600x800.png',
-    tags: [{ en: 'Sour', es: 'Agrio' }, { en: 'Foamy', es: 'Espumoso' }],
-    baseSpirit: 'Pisco',
-  },
-];
+// Helper to map the raw API drink object to our detailed Cocktail type
+function mapApiDrinkToCocktail(drink: any): Cocktail {
+  const ingredients: Ingredient[] = [];
+  for (let i = 1; i <= 15; i++) {
+    const ingredientName = drink[`strIngredient${i}`];
+    const measure = drink[`strMeasure${i}`];
+    if (ingredientName) {
+      ingredients.push({
+        name: { en: ingredientName, es: ingredientName },
+        amount: measure ? measure.trim() : '',
+      });
+    }
+  }
 
-export function getCocktails() {
-  return cocktails;
+  const tags = drink.strTags
+    ? drink.strTags.split(',').map((tag: string) => ({ en: tag, es: tag }))
+    : [];
+
+  return {
+    id: drink.idDrink,
+    name: { en: drink.strDrink, es: drink.strDrink },
+    ingredients,
+    instructions: {
+      en: drink.strInstructions || '',
+      es: drink.strInstructionsES || drink.strInstructions || '',
+    },
+    image: drink.strDrinkThumb,
+    tags,
+    baseSpirit: drink.strCategory || 'Unknown', // Best effort
+  };
 }
 
-export function getCocktailById(id: string) {
-  return cocktails.find((c) => c.id === id);
+const API_BASE = 'https://www.thecocktaildb.com/api/json/v1/1';
+
+// Fetches a default list of cocktails (e.g., starting with 'm')
+export async function getCocktails(): Promise<CocktailSummary[]> {
+  try {
+    const response = await fetch(`${API_BASE}/search.php?f=m`);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return (data.drinks || []).map((drink: any) => ({
+      id: drink.idDrink,
+      name: drink.strDrink,
+      image: drink.strDrinkThumb,
+      baseSpirit: drink.strCategory,
+    }));
+  } catch (error) {
+    console.error('Failed to fetch cocktails:', error);
+    return [];
+  }
 }
 
-export function getDailyCocktail(): Cocktail {
-  const today = new Date();
-  const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
-  const index = dayOfYear % cocktails.length;
-  return cocktails[index];
+// Fetches full details for a single cocktail by its ID
+export async function getCocktailById(id: string): Promise<Cocktail | null> {
+  try {
+    const response = await fetch(`${API_BASE}/lookup.php?i=${id}`);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    if (data.drinks && data.drinks.length > 0) {
+      return mapApiDrinkToCocktail(data.drinks[0]);
+    }
+    return null;
+  } catch (error) {
+    console.error(`Failed to fetch cocktail by ID ${id}:`, error);
+    return null;
+  }
 }
 
-export const baseSpirits = [...new Set(cocktails.map(c => c.baseSpirit))];
+// Fetches a random cocktail for the "Cocktail of the Day" feature
+export async function getDailyCocktail(): Promise<Cocktail | null> {
+  try {
+    const response = await fetch(`${API_BASE}/random.php`);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    if (data.drinks && data.drinks.length > 0) {
+      return mapApiDrinkToCocktail(data.drinks[0]);
+    }
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch daily cocktail:', error);
+    return null;
+  }
+}
+
+// Searches for cocktails by name
+export async function searchCocktails(query: string): Promise<CocktailSummary[]> {
+  if (!query) return getCocktails();
+  try {
+    const response = await fetch(`${API_BASE}/search.php?s=${query}`);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return (data.drinks || []).map((drink: any) => ({
+      id: drink.idDrink,
+      name: drink.strDrink,
+      image: drink.strDrinkThumb,
+      baseSpirit: drink.strCategory,
+    }));
+  } catch (error) {
+    console.error(`Failed to search cocktails for "${query}":`, error);
+    return [];
+  }
+}
+
+// Fetches cocktails by a base spirit
+export async function getCocktailsBySpirit(spirit: string): Promise<CocktailSummary[]> {
+  try {
+    const response = await fetch(`${API_BASE}/filter.php?i=${spirit}`);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return (data.drinks || []).map((drink: any) => ({
+      id: drink.idDrink,
+      name: drink.strDrink,
+      image: drink.strDrinkThumb,
+      baseSpirit: spirit, // We know the spirit since we filtered by it
+    }));
+  } catch (error) {
+    console.error(`Failed to fetch cocktails for spirit "${spirit}":`, error);
+    return [];
+  }
+}
+
+// This list is now for UI filtering buttons only
+export const baseSpirits = ['Vodka', 'Gin', 'Rum', 'Tequila', 'Whiskey', 'Brandy'];

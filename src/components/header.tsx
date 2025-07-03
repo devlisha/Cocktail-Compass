@@ -1,7 +1,8 @@
 
 'use client';
 
-import { Martini, Heart, Languages, Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Martini, Heart, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppContext } from '@/hooks/use-app-context';
 import {
@@ -13,11 +14,29 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { getCocktailById } from '@/lib/cocktails';
+import type { Cocktail } from '@/lib/cocktails';
 import Image from 'next/image';
+import { Skeleton } from './ui/skeleton';
 
 function FavoritesSheetContent() {
     const { favorites, language } = useAppContext();
-    const favoriteCocktails = favorites.map(id => getCocktailById(id)).filter(Boolean);
+    const [favoriteCocktails, setFavoriteCocktails] = useState<(Cocktail | null)[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            setLoading(true);
+            const cocktails = await Promise.all(favorites.map(id => getCocktailById(id)));
+            setFavoriteCocktails(cocktails);
+            setLoading(false);
+        };
+        if (favorites.length > 0) {
+            fetchFavorites();
+        } else {
+            setFavoriteCocktails([]);
+            setLoading(false);
+        }
+    }, [favorites]);
 
     return (
         <>
@@ -27,7 +46,16 @@ function FavoritesSheetContent() {
                 </SheetTitle>
             </SheetHeader>
             <div className="py-4">
-                {favoriteCocktails.length > 0 ? (
+                {loading ? (
+                    <div className="space-y-4">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                            <div key={i} className="flex items-center gap-4">
+                                <Skeleton className="h-[50px] w-[50px] rounded-md" />
+                                <Skeleton className="h-6 w-3/4" />
+                            </div>
+                        ))}
+                    </div>
+                ) : favoriteCocktails.length > 0 && favoriteCocktails.some(c => c) ? (
                     <ul className="space-y-4">
                         {favoriteCocktails.map(cocktail => cocktail && (
                             <li key={cocktail.id} className="flex items-center gap-4">
@@ -45,7 +73,7 @@ function FavoritesSheetContent() {
                     </ul>
                 ) : (
                     <p className="text-muted-foreground text-center font-body">
-                        {language === 'en' ? 'No favorites yet.' : 'Aún no tienes favoritos.'}
+                        {language === 'en' ? 'You have no favorite cocktails yet.' : 'Aún no tienes cócteles favoritos.'}
                     </p>
                 )}
             </div>

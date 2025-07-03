@@ -1,22 +1,58 @@
 
 'use client';
 
-import type { Cocktail } from '@/lib/cocktails';
+import { useState, useEffect } from 'react';
+import type { Cocktail, CocktailSummary } from '@/lib/cocktails';
+import { getCocktailById } from '@/lib/cocktails';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAppContext } from '@/hooks/use-app-context';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
-interface CocktailCardProps {
-  cocktail: Cocktail;
-}
-
-function CocktailDetails({ cocktail }: { cocktail: Cocktail }) {
+function CocktailDetails({ cocktailId }: { cocktailId: string }) {
   const { language } = useAppContext();
+  const [cocktail, setCocktail] = useState<Cocktail | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!cocktailId) return;
+    const fetchDetails = async () => {
+      setLoading(true);
+      const details = await getCocktailById(cocktailId);
+      setCocktail(details);
+      setLoading(false);
+    };
+    fetchDetails();
+  }, [cocktailId]);
+
+  if (loading) {
+    return (
+      <div className="space-y-4 p-4">
+        <Skeleton className="h-8 w-1/2" />
+        <div className="grid md:grid-cols-2 gap-6 mt-4">
+          <Skeleton className="aspect-square w-full rounded-lg" />
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-6 w-1/4 mt-4" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!cocktail) {
+    return <div>{language === 'en' ? 'Cocktail details not found.' : 'No se encontraron los detalles del cóctel.'}</div>;
+  }
+
   return (
     <>
       <DialogHeader>
@@ -51,7 +87,7 @@ function CocktailDetails({ cocktail }: { cocktail: Cocktail }) {
 }
 
 
-export default function CocktailCard({ cocktail }: CocktailCardProps) {
+export default function CocktailCard({ cocktail }: { cocktail: CocktailSummary }) {
   const { language, isFavorite, toggleFavorite } = useAppContext();
   const favorite = isFavorite(cocktail.id);
 
@@ -63,7 +99,7 @@ export default function CocktailCard({ cocktail }: CocktailCardProps) {
             <div className="aspect-[3/4] relative">
               <Image
                 src={cocktail.image}
-                alt={cocktail.name[language]}
+                alt={cocktail.name}
                 fill
                 className="object-cover"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -73,7 +109,7 @@ export default function CocktailCard({ cocktail }: CocktailCardProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <CardHeader className="absolute bottom-0 w-full">
               <CardTitle className="font-headline text-2xl text-white">
-                {cocktail.name[language]}
+                {cocktail.name}
               </CardTitle>
             </CardHeader>
           </div>
@@ -94,7 +130,7 @@ export default function CocktailCard({ cocktail }: CocktailCardProps) {
         </CardFooter>
       </Card>
       <DialogContent className="sm:max-w-3xl">
-        <CocktailDetails cocktail={cocktail} />
+        <CocktailDetails cocktailId={cocktail.id} />
       </DialogContent>
     </Dialog>
   );
