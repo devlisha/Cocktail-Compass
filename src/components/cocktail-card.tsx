@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function CocktailDetails({ cocktailId }: { cocktailId: string }) {
+function CocktailDetails({ cocktailId, initialName }: { cocktailId: string; initialName: string }) {
   const { language } = useAppContext();
   const [cocktail, setCocktail] = useState<Cocktail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,10 +36,15 @@ function CocktailDetails({ cocktailId }: { cocktailId: string }) {
       instructions: { en: 'Instructions', es: 'Instrucciones', de: 'Anleitung', ru: 'Инструкции' },
   }
 
-  if (loading) {
-    return (
-      <div className="space-y-4 p-4">
-        <Skeleton className="h-8 w-1/2" />
+  const title = cocktail ? cocktail.name[language] : initialName;
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle className="font-headline text-3xl text-primary">{title}</DialogTitle>
+      </DialogHeader>
+      
+      {loading ? (
         <div className="grid md:grid-cols-2 gap-6 mt-4">
           <Skeleton className="aspect-square w-full rounded-lg" />
           <div className="space-y-4">
@@ -51,43 +56,34 @@ function CocktailDetails({ cocktailId }: { cocktailId: string }) {
             <Skeleton className="h-20 w-full" />
           </div>
         </div>
-      </div>
-    );
-  }
+      ) : !cocktail ? (
+        <div className="mt-4">{text.notFound[language]}</div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-6 mt-4 max-h-[70vh] overflow-y-auto pr-4">
+          <div className="relative aspect-square md:aspect-auto rounded-lg overflow-hidden">
+            <Image
+              src={cocktail.image}
+              alt={cocktail.name[language]}
+              fill
+              className="object-cover"
+              data-ai-hint={`${cocktail.baseSpirit} cocktail`}
+            />
+          </div>
+          <div>
+            <h3 className="font-bold font-headline text-xl mb-2">{text.ingredients[language]}</h3>
+            <ul className="space-y-1 list-disc list-inside font-body text-muted-foreground mb-6">
+              {cocktail.ingredients.map((ing, index) => (
+                <li key={index}>
+                  <span className="font-semibold text-foreground">{ing.name[language]}</span>: {ing.amount}
+                </li>
+              ))}
+            </ul>
 
-  if (!cocktail) {
-    return <div>{text.notFound[language]}</div>;
-  }
-
-  return (
-    <>
-      <DialogHeader>
-        <DialogTitle className="font-headline text-3xl text-primary">{cocktail.name[language]}</DialogTitle>
-      </DialogHeader>
-      <div className="grid md:grid-cols-2 gap-6 mt-4 max-h-[70vh] overflow-y-auto pr-4">
-        <div className="relative aspect-square md:aspect-auto rounded-lg overflow-hidden">
-          <Image
-            src={cocktail.image}
-            alt={cocktail.name[language]}
-            fill
-            className="object-cover"
-            data-ai-hint={`${cocktail.baseSpirit} cocktail`}
-          />
+            <h3 className="font-bold font-headline text-xl mb-2">{text.instructions[language]}</h3>
+            <p className="font-body text-muted-foreground whitespace-pre-line">{cocktail.instructions[language]}</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-bold font-headline text-xl mb-2">{text.ingredients[language]}</h3>
-          <ul className="space-y-1 list-disc list-inside font-body text-muted-foreground mb-6">
-            {cocktail.ingredients.map((ing, index) => (
-              <li key={index}>
-                <span className="font-semibold text-foreground">{ing.name[language]}</span>: {ing.amount}
-              </li>
-            ))}
-          </ul>
-
-          <h3 className="font-bold font-headline text-xl mb-2">{text.instructions[language]}</h3>
-          <p className="font-body text-muted-foreground whitespace-pre-line">{cocktail.instructions[language]}</p>
-        </div>
-      </div>
+      )}
     </>
   );
 }
@@ -140,7 +136,7 @@ export default function CocktailCard({ cocktail }: { cocktail: CocktailSummary }
         </CardFooter>
       </Card>
       <DialogContent className="sm:max-w-3xl">
-        <CocktailDetails cocktailId={cocktail.id} />
+        <CocktailDetails cocktailId={cocktail.id} initialName={cocktail.name} />
       </DialogContent>
     </Dialog>
   );
