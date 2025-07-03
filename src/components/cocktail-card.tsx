@@ -30,6 +30,12 @@ function CocktailDetails({ cocktailId }: { cocktailId: string }) {
     fetchDetails();
   }, [cocktailId]);
 
+  const text = {
+      notFound: { en: 'Cocktail details not found.', es: 'No se encontraron los detalles del cóctel.', de: 'Cocktail-Details nicht gefunden.', ru: 'Детали коктейля не найдены.' },
+      ingredients: { en: 'Ingredients', es: 'Ingredientes', de: 'Zutaten', ru: 'Ингредиенты' },
+      instructions: { en: 'Instructions', es: 'Instrucciones', de: 'Anleitung', ru: 'Инструкции' },
+  }
+
   if (loading) {
     return (
       <div className="space-y-4 p-4">
@@ -50,7 +56,7 @@ function CocktailDetails({ cocktailId }: { cocktailId: string }) {
   }
 
   if (!cocktail) {
-    return <div>{language === 'en' ? 'Cocktail details not found.' : 'No se encontraron los detalles del cóctel.'}</div>;
+    return <div>{text.notFound[language]}</div>;
   }
 
   return (
@@ -69,7 +75,7 @@ function CocktailDetails({ cocktailId }: { cocktailId: string }) {
           />
         </div>
         <div>
-          <h3 className="font-bold font-headline text-xl mb-2">{language === 'en' ? 'Ingredients' : 'Ingredientes'}</h3>
+          <h3 className="font-bold font-headline text-xl mb-2">{text.ingredients[language]}</h3>
           <ul className="space-y-1 list-disc list-inside font-body text-muted-foreground mb-6">
             {cocktail.ingredients.map((ing, index) => (
               <li key={index}>
@@ -78,7 +84,7 @@ function CocktailDetails({ cocktailId }: { cocktailId: string }) {
             ))}
           </ul>
 
-          <h3 className="font-bold font-headline text-xl mb-2">{language === 'en' ? 'Instructions' : 'Instrucciones'}</h3>
+          <h3 className="font-bold font-headline text-xl mb-2">{text.instructions[language]}</h3>
           <p className="font-body text-muted-foreground whitespace-pre-line">{cocktail.instructions[language]}</p>
         </div>
       </div>
@@ -90,6 +96,10 @@ function CocktailDetails({ cocktailId }: { cocktailId: string }) {
 export default function CocktailCard({ cocktail }: { cocktail: CocktailSummary }) {
   const { language, isFavorite, toggleFavorite } = useAppContext();
   const favorite = isFavorite(cocktail.id);
+
+  const text = {
+    favorite: { en: 'Favorite', es: 'Favorito', de: 'Favorit', ru: 'В избранное' }
+  }
 
   return (
     <Dialog>
@@ -121,7 +131,7 @@ export default function CocktailCard({ cocktail }: { cocktail: CocktailSummary }
               size="icon"
               variant="ghost"
               className="rounded-full transition-transform hover:scale-110 active:scale-95"
-              aria-label={language === 'en' ? 'Favorite' : 'Favorito'}
+              aria-label={text.favorite[language]}
               onClick={() => toggleFavorite(cocktail.id)}
             >
               <Heart className={cn('h-6 w-6', favorite ? 'text-red-500 fill-current' : 'text-muted-foreground')} />

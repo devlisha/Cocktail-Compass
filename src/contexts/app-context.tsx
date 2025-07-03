@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { Cocktail, Language } from '@/lib/cocktails';
+import type { Language } from '@/lib/cocktails';
 import React, { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
 interface AppContextType {
@@ -27,7 +27,7 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
         setFavorites(JSON.parse(storedFavorites));
       }
       const storedLanguage = localStorage.getItem('cocktailLanguage') as Language;
-      if (storedLanguage) {
+      if (storedLanguage && ['en', 'es', 'de', 'ru'].includes(storedLanguage)) {
         setLanguage(storedLanguage);
       }
     } catch (error) {

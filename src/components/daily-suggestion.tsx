@@ -1,18 +1,25 @@
 
+'use client';
+
 import type { Cocktail } from '@/lib/cocktails';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import Image from 'next/image';
+import { useAppContext } from '@/hooks/use-app-context';
 
 interface DailySuggestionProps {
   cocktail: Cocktail;
 }
 
 export default function DailySuggestion({ cocktail }: DailySuggestionProps) {
-  // Since this is a server component, we can decide language based on request headers later.
-  // For now, we default to English. A client component wrapper could handle language switching.
-  const language = 'en';
+  const { language } = useAppContext();
   const text = {
-    title: { en: 'Cocktail of the Day', es: 'Cóctel del Día' },
+    title: { en: 'Cocktail of the Day', es: 'Cóctel del Día', de: 'Cocktail des Tages', ru: 'Коктейль дня' },
+    description: { 
+        en: 'A delightful suggestion to brighten your day. Find the recipe below or explore other classics.', 
+        es: 'Una sugerencia deliciosa para alegrar tu día. Encuentra la receta abajo o explora otros clásicos.',
+        de: 'Ein herrlicher Vorschlag, um Ihren Tag zu erhellen. Finden Sie das Rezept unten oder entdecken Sie andere Klassiker.',
+        ru: 'Восхитительное предложение, чтобы скрасить ваш день. Найдите рецепт ниже или исследуйте другие классические коктейли.'
+    }
   }
 
   return (
@@ -27,7 +34,7 @@ export default function DailySuggestion({ cocktail }: DailySuggestionProps) {
               {cocktail.name[language]}
             </p>
             <p className="mt-4 text-muted-foreground font-body">
-              {language === 'en' ? 'A delightful suggestion to brighten your day. Find the recipe below or explore other classics.' : 'Una sugerencia deliciosa para alegrar tu día. Encuentra la receta abajo o explora otros clásicos.'}
+              {text.description[language]}
             </p>
           </div>
           <div className="relative h-64 md:h-full min-h-[250px]">

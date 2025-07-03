@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { getCocktailById } from '@/lib/cocktails';
-import type { Cocktail } from '@/lib/cocktails';
+import type { Cocktail, Language } from '@/lib/cocktails';
 import Image from 'next/image';
 import { Skeleton } from './ui/skeleton';
 
@@ -37,12 +37,17 @@ function FavoritesSheetContent() {
             setLoading(false);
         }
     }, [favorites]);
+    
+    const text = {
+        title: { en: 'Favorite Cocktails', es: 'Cócteles Favoritos', de: 'Lieblingscocktails', ru: 'Избранные коктейли' },
+        empty: { en: 'You have no favorite cocktails yet.', es: 'Aún no tienes cócteles favoritos.', de: 'Du hast noch keine Lieblingscocktails.', ru: 'У вас еще нет избранных коктейлей.' },
+    };
 
     return (
         <>
             <SheetHeader>
                 <SheetTitle className="font-headline">
-                    {language === 'en' ? 'Favorite Cocktails' : 'Cócteles Favoritos'}
+                    {text.title[language]}
                 </SheetTitle>
             </SheetHeader>
             <div className="py-4">
@@ -73,7 +78,7 @@ function FavoritesSheetContent() {
                     </ul>
                 ) : (
                     <p className="text-muted-foreground text-center font-body">
-                        {language === 'en' ? 'You have no favorite cocktails yet.' : 'Aún no tienes cócteles favoritos.'}
+                        {text.empty[language]}
                     </p>
                 )}
             </div>
@@ -106,10 +111,12 @@ export default function Header() {
             <DropdownMenuContent>
               <DropdownMenuRadioGroup
                 value={language}
-                onValueChange={(value) => setLanguage(value as 'en' | 'es')}
+                onValueChange={(value) => setLanguage(value as Language)}
               >
                 <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="es">Español</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="de">Deutsch</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="ru">Русский</DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>

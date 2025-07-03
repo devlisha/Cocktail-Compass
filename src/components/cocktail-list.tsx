@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import type { CocktailSummary } from '@/lib/cocktails';
 import { baseSpirits, getCocktails, getCocktailsBySpirit, searchCocktails } from '@/lib/cocktails';
 import { Input } from '@/components/ui/input';
@@ -72,9 +72,15 @@ export default function CocktailList() {
   };
 
   const text = {
-    title: { en: 'Cocktail Library', es: 'Recetario de Cócteles' },
-    searchPlaceholder: { en: 'Search for a cocktail...', es: 'Buscar un cóctel...' },
-    all: { en: 'All', es: 'Todos' },
+    title: { en: 'Cocktail Library', es: 'Recetario de Cócteles', de: 'Cocktail-Bibliothek', ru: 'Библиотека коктейлей' },
+    searchPlaceholder: { en: 'Search for a cocktail...', es: 'Buscar un cóctel...', de: 'Suche nach einem Cocktail...', ru: 'Поиск коктейля...' },
+    all: { en: 'All', es: 'Todos', de: 'Alle', ru: 'Все' },
+    notFound: {
+        en: 'No cocktails found. Try a different search!',
+        es: 'No se encontraron cócteles. ¡Intenta una búsqueda diferente!',
+        de: 'Keine Cocktails gefunden. Versuchen Sie eine andere Suche!',
+        ru: 'Коктейли не найдены. Попробуйте другой поиск!'
+    }
   };
 
   return (
@@ -128,9 +134,7 @@ export default function CocktailList() {
         </div>
       ) : (
         <p className="text-center text-muted-foreground py-16">
-          {language === 'en'
-            ? 'No cocktails found. Try a different search!'
-            : 'No se encontraron cócteles. ¡Intenta una búsqueda diferente!'}
+          {text.notFound[language]}
         </p>
       )}
     </section>

@@ -1,4 +1,4 @@
-export type Language = 'en' | 'es';
+export type Language = 'en' | 'es' | 'de' | 'ru';
 
 type TranslatedString = {
   [key in Language]: string;
@@ -36,23 +36,35 @@ function mapApiDrinkToCocktail(drink: any): Cocktail {
     const measure = drink[`strMeasure${i}`];
     if (ingredientName) {
       ingredients.push({
-        name: { en: ingredientName, es: ingredientName },
+        name: { 
+          en: ingredientName, 
+          es: ingredientName,
+          de: ingredientName,
+          ru: ingredientName,
+        },
         amount: measure ? measure.trim() : '',
       });
     }
   }
 
   const tags = drink.strTags
-    ? drink.strTags.split(',').map((tag: string) => ({ en: tag, es: tag }))
+    ? drink.strTags.split(',').map((tag: string) => ({ en: tag, es: tag, de: tag, ru: tag }))
     : [];
 
   return {
     id: drink.idDrink,
-    name: { en: drink.strDrink, es: drink.strDrink },
+    name: { 
+      en: drink.strDrink, 
+      es: drink.strDrink,
+      de: drink.strDrink,
+      ru: drink.strDrink,
+    },
     ingredients,
     instructions: {
       en: drink.strInstructions || '',
       es: drink.strInstructionsES || drink.strInstructions || '',
+      de: drink.strInstructionsDE || drink.strInstructions || '',
+      ru: drink.strInstructions || '', // No RU translation available in API
     },
     image: drink.strDrinkThumb,
     tags,
