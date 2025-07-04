@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,12 +9,14 @@ import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAppContext } from '@/hooks/use-app-context';
+import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function CocktailDetails({ cocktailId, initialName }: { cocktailId: string; initialName: string }) {
   const { language } = useAppContext();
+  const { t } = useTranslation();
   const [cocktail, setCocktail] = useState<Cocktail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,12 +30,6 @@ function CocktailDetails({ cocktailId, initialName }: { cocktailId: string; init
     };
     fetchDetails();
   }, [cocktailId]);
-
-  const text = {
-      notFound: { en: 'Cocktail details not found.', es: 'No se encontraron los detalles del cóctel.', de: 'Cocktail-Details nicht gefunden.', ru: 'Детали коктейля не найдены.' },
-      ingredients: { en: 'Ingredients', es: 'Ingredientes', de: 'Zutaten', ru: 'Ингредиенты' },
-      instructions: { en: 'Instructions', es: 'Instrucciones', de: 'Anleitung', ru: 'Инструкции' },
-  }
 
   const title = cocktail ? cocktail.name[language] : initialName;
 
@@ -57,7 +52,7 @@ function CocktailDetails({ cocktailId, initialName }: { cocktailId: string; init
           </div>
         </div>
       ) : !cocktail ? (
-        <div className="mt-4">{text.notFound[language]}</div>
+        <div className="mt-4">{t('cocktail.notFound')}</div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6 mt-4 max-h-[70vh] overflow-y-auto pr-4">
           <div className="relative aspect-square md:aspect-auto rounded-lg overflow-hidden">
@@ -70,7 +65,7 @@ function CocktailDetails({ cocktailId, initialName }: { cocktailId: string; init
             />
           </div>
           <div>
-            <h3 className="font-bold font-headline text-xl mb-2">{text.ingredients[language]}</h3>
+            <h3 className="font-bold font-headline text-xl mb-2">{t('cocktail.ingredients')}</h3>
             <ul className="space-y-1 list-disc list-inside font-body text-muted-foreground mb-6">
               {cocktail.ingredients.map((ing, index) => (
                 <li key={index}>
@@ -79,7 +74,7 @@ function CocktailDetails({ cocktailId, initialName }: { cocktailId: string; init
               ))}
             </ul>
 
-            <h3 className="font-bold font-headline text-xl mb-2">{text.instructions[language]}</h3>
+            <h3 className="font-bold font-headline text-xl mb-2">{t('cocktail.instructions')}</h3>
             <p className="font-body text-muted-foreground whitespace-pre-line">{cocktail.instructions[language]}</p>
           </div>
         </div>
@@ -91,11 +86,8 @@ function CocktailDetails({ cocktailId, initialName }: { cocktailId: string; init
 
 export default function CocktailCard({ cocktail }: { cocktail: CocktailSummary }) {
   const { language, isFavorite, toggleFavorite } = useAppContext();
+  const { t } = useTranslation();
   const favorite = isFavorite(cocktail.id);
-
-  const text = {
-    favorite: { en: 'Favorite', es: 'Favorito', de: 'Favorit', ru: 'В избранное' }
-  }
 
   return (
     <Dialog>
@@ -127,7 +119,7 @@ export default function CocktailCard({ cocktail }: { cocktail: CocktailSummary }
               size="icon"
               variant="ghost"
               className="rounded-full transition-transform hover:scale-110 active:scale-95"
-              aria-label={text.favorite[language]}
+              aria-label={favorite ? t('cocktail.removeFromFavorites') : t('cocktail.addToFavorites')}
               onClick={() => toggleFavorite(cocktail.id)}
             >
               <Heart className={cn('h-6 w-6', favorite ? 'text-red-500 fill-current' : 'text-muted-foreground')} />

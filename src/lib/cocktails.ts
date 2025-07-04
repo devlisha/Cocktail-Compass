@@ -1,4 +1,7 @@
-export type Language = 'en' | 'es' | 'de' | 'ru';
+import { Language } from '@/lib/i18n';
+import { getTranslatedIngredient } from '@/lib/ingredient-translations';
+
+export type { Language };
 
 type TranslatedString = {
   [key in Language]: string;
@@ -38,9 +41,9 @@ function mapApiDrinkToCocktail(drink: any): Cocktail {
       ingredients.push({
         name: { 
           en: ingredientName, 
-          es: ingredientName,
-          de: ingredientName,
-          ru: ingredientName,
+          es: getTranslatedIngredient(ingredientName, 'es'),
+          de: getTranslatedIngredient(ingredientName, 'de'),
+          ru: getTranslatedIngredient(ingredientName, 'ru'),
         },
         amount: measure ? measure.trim() : '',
       });
@@ -48,7 +51,12 @@ function mapApiDrinkToCocktail(drink: any): Cocktail {
   }
 
   const tags = drink.strTags
-    ? drink.strTags.split(',').map((tag: string) => ({ en: tag, es: tag, de: tag, ru: tag }))
+    ? drink.strTags.split(',').map((tag: string) => ({ 
+        en: tag.trim(), 
+        es: tag.trim(), 
+        de: tag.trim(), 
+        ru: tag.trim() 
+      }))
     : [];
 
   return {
@@ -163,3 +171,17 @@ export async function getCocktailsBySpirit(spirit: string): Promise<CocktailSumm
 
 // This list is now for UI filtering buttons only
 export const baseSpirits = ['Vodka', 'Gin', 'Rum', 'Tequila', 'Whiskey', 'Brandy'];
+
+// Helper function to get translated spirit names
+export function getTranslatedSpirit(spirit: string, language: Language): string {
+  const spiritTranslations: Record<string, Record<Language, string>> = {
+    'Vodka': { en: 'Vodka', es: 'Vodka', de: 'Wodka', ru: 'Водка' },
+    'Gin': { en: 'Gin', es: 'Ginebra', de: 'Gin', ru: 'Джин' },
+    'Rum': { en: 'Rum', es: 'Ron', de: 'Rum', ru: 'Ром' },
+    'Tequila': { en: 'Tequila', es: 'Tequila', de: 'Tequila', ru: 'Текила' },
+    'Whiskey': { en: 'Whiskey', es: 'Whisky', de: 'Whisky', ru: 'Виски' },
+    'Brandy': { en: 'Brandy', es: 'Brandy', de: 'Brandy', ru: 'Бренди' },
+  };
+  
+  return spiritTranslations[spirit]?.[language] || spirit;
+}

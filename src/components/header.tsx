@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { Martini, Heart, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppContext } from '@/hooks/use-app-context';
+import { useTranslation } from '@/hooks/use-translation';
+import { languageConfig, supportedLanguages, Language } from '@/lib/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,12 +16,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { getCocktailById } from '@/lib/cocktails';
-import type { Cocktail, Language } from '@/lib/cocktails';
+import type { Cocktail } from '@/lib/cocktails';
 import Image from 'next/image';
 import { Skeleton } from './ui/skeleton';
 
 function FavoritesSheetContent() {
     const { favorites, language } = useAppContext();
+    const { t } = useTranslation();
     const [favoriteCocktails, setFavoriteCocktails] = useState<(Cocktail | null)[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -37,17 +40,12 @@ function FavoritesSheetContent() {
             setLoading(false);
         }
     }, [favorites]);
-    
-    const text = {
-        title: { en: 'Favorite Cocktails', es: 'Cócteles Favoritos', de: 'Lieblingscocktails', ru: 'Избранные коктейли' },
-        empty: { en: 'You have no favorite cocktails yet.', es: 'Aún no tienes cócteles favoritos.', de: 'Du hast noch keine Lieblingscocktails.', ru: 'У вас еще нет избранных коктейлей.' },
-    };
 
     return (
         <>
             <SheetHeader>
                 <SheetTitle className="font-headline">
-                    {text.title[language]}
+                    {t('favorites.title')}
                 </SheetTitle>
             </SheetHeader>
             <div className="py-4">
@@ -78,7 +76,7 @@ function FavoritesSheetContent() {
                     </ul>
                 ) : (
                     <p className="text-muted-foreground text-center font-body">
-                        {text.empty[language]}
+                        {t('favorites.empty')}
                     </p>
                 )}
             </div>
@@ -89,6 +87,7 @@ function FavoritesSheetContent() {
 
 export default function Header() {
   const { language, setLanguage, favorites } = useAppContext();
+  const { t } = useTranslation();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/80 backdrop-blur-sm">
@@ -96,7 +95,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <Martini className="h-7 w-7 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-primary">
-            Cocktail Compass
+            {t('header.title')}
           </h1>
         </div>
 
@@ -105,7 +104,7 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Languages className="h-5 w-5" />
-                <span className="sr-only">Change language</span>
+                <span className="sr-only">{t('header.changeLanguage')}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -113,10 +112,11 @@ export default function Header() {
                 value={language}
                 onValueChange={(value) => setLanguage(value as Language)}
               >
-                <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="es">Español</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="de">Deutsch</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="ru">Русский</DropdownMenuRadioItem>
+                {supportedLanguages.map((lang) => (
+                  <DropdownMenuRadioItem key={lang} value={lang}>
+                    {languageConfig[lang].flag} {languageConfig[lang].nativeName}
+                  </DropdownMenuRadioItem>
+                ))}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -130,7 +130,7 @@ export default function Header() {
                     {favorites.length}
                   </span>
                 )}
-                <span className="sr-only">View favorites</span>
+                <span className="sr-only">{t('header.viewFavorites')}</span>
               </Button>
             </SheetTrigger>
             <SheetContent>

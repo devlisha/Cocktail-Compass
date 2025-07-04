@@ -1,7 +1,8 @@
 
 'use client';
 
-import type { Language } from '@/lib/cocktails';
+import type { Language } from '@/lib/i18n';
+import { detectLanguage } from '@/lib/i18n';
 import React, { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
 interface AppContextType {
@@ -26,10 +27,10 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
       if (storedFavorites) {
         setFavorites(JSON.parse(storedFavorites));
       }
-      const storedLanguage = localStorage.getItem('cocktailLanguage') as Language;
-      if (storedLanguage && ['en', 'es', 'de', 'ru'].includes(storedLanguage)) {
-        setLanguage(storedLanguage);
-      }
+      
+      // Use the new detectLanguage function
+      const detectedLanguage = detectLanguage();
+      setLanguage(detectedLanguage);
     } catch (error) {
       console.error("Could not access localStorage:", error);
     }

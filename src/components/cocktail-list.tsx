@@ -1,14 +1,14 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import type { CocktailSummary } from '@/lib/cocktails';
-import { baseSpirits, getCocktails, getCocktailsBySpirit, searchCocktails } from '@/lib/cocktails';
+import { baseSpirits, getCocktails, getCocktailsBySpirit, searchCocktails, getTranslatedSpirit } from '@/lib/cocktails';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import CocktailCard from './cocktail-card';
 import { Search } from 'lucide-react';
 import { useAppContext } from '@/hooks/use-app-context';
+import { useTranslation } from '@/hooks/use-translation';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function CocktailGridSkeleton() {
@@ -27,6 +27,7 @@ function CocktailGridSkeleton() {
 
 export default function CocktailList() {
   const { language } = useAppContext();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [selectedSpirit, setSelectedSpirit] = useState<string | null>(null);
@@ -87,7 +88,7 @@ export default function CocktailList() {
     <section aria-labelledby="cocktail-library-title">
       <div className="text-center mb-8">
         <h2 id="cocktail-library-title" className="text-3xl md:text-4xl font-bold font-headline text-primary">
-          {text.title[language]}
+          {t('library.title')}
         </h2>
       </div>
 
@@ -96,7 +97,7 @@ export default function CocktailList() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="search"
-            placeholder={text.searchPlaceholder[language]}
+            placeholder={t('library.searchPlaceholder')}
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-10 w-full"
@@ -110,7 +111,7 @@ export default function CocktailList() {
           onClick={() => handleSpiritSelect(null)}
           className="rounded-full"
         >
-          {text.all[language]}
+          {t('library.all')}
         </Button>
         {baseSpirits.map((spirit) => (
           <Button
@@ -119,7 +120,7 @@ export default function CocktailList() {
             onClick={() => handleSpiritSelect(spirit)}
             className="rounded-full"
           >
-            {spirit}
+            {getTranslatedSpirit(spirit, language)}
           </Button>
         ))}
       </div>
@@ -134,7 +135,7 @@ export default function CocktailList() {
         </div>
       ) : (
         <p className="text-center text-muted-foreground py-16">
-          {text.notFound[language]}
+          {t('library.notFound')}
         </p>
       )}
     </section>
